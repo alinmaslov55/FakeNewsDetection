@@ -54,3 +54,7 @@ data/*.csv
 data/*.jsonl
 !data/.gitkeep
 
+
+# Node / Frontend
+node_modules/
+dist/

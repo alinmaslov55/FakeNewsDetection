@@ -52,3 +52,21 @@ The API will be available at:
 - **Root endpoint:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - **Health check:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
 - **Interactive API Docs (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+---
+
+## Quickstart: Frontend
+
+### 1. Install Dependencies
+```bash
+cd frontend
+npm install
+```
+
+### 2. Run the Vite Development Server
+```bash
+npm run dev
+```
+
+The frontend will be available at:
+- **Local Dev Server:** [http://localhost:5173/](http://localhost:5173/)
