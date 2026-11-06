@@ -94,7 +94,7 @@ flowchart TD
 ---
 
 ### `DAT-01` — Dataset Acquisition, Validation & Exploratory Analysis
-- **Owner**: Person A (Machine Learning & Data)
+- **Owner**: Carina (Machine Learning & Data)
 - **Milestone**: Milestone 1 (Project Setup & Data)
 - **Target Paths**: `data/`, `notebooks/01_data_exploration.ipynb`
 - **Depends On**: *None*
