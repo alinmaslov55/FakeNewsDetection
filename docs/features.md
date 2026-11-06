@@ -94,7 +94,7 @@ flowchart TD
 ---
 
 ### `DAT-01` — Dataset Acquisition, Validation & Exploratory Analysis
-- **Owner**: Person A (Machine Learning & Data)
+- **Owner**: Carina (Machine Learning & Data)
 - **Milestone**: Milestone 1 (Project Setup & Data)
 - **Target Paths**: `data/`, `notebooks/01_data_exploration.ipynb`
 - **Depends On**: *None*
@@ -114,9 +114,9 @@ flowchart TD
    - Export a consolidated, deduplicated dataset (`data/processed_news.csv`) with columns: `id`, `title`, `text`, `label`.
 
 #### Acceptance Criteria
-- [ ] Reproducible notebook `notebooks/01_data_exploration.ipynb` loads raw CSVs, outputs class balance charts/stats, and saves `data/processed_news.csv`.
-- [ ] Zero null, empty, or duplicate `text` rows remain in the processed dataset.
-- [ ] Source-leakage patterns are documented for removal in `NLP-01`.
+- [x] Reproducible notebook `notebooks/01_data_exploration.ipynb` loads raw CSVs, outputs class balance charts/stats, and saves `data/processed_news.csv`.
+- [x] Zero null, empty, or duplicate `text` rows remain in the processed dataset.
+- [x] Source-leakage patterns are documented for removal in `NLP-01`.
 
 ---
 
