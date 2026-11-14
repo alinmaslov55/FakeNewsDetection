@@ -36,7 +36,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[DAT-01](#dat-01--dataset-acquisition-validation--exploratory-analysis)** | Dataset Acquisition, Validation & Exploratory Analysis | Carina | Milestone 1 | Planned | *None* |
 | **[NLP-01](#nlp-01--text-preprocessing--linguistic-normalization-module)** | Text Preprocessing & Linguistic Normalization Module | Alin | Milestone 2 | **Done** | `DAT-01` |
-| **[MLP-01](#mlp-01--tf-idf-vectorization--classifier-training-pipeline)** | TF-IDF Vectorization & Classifier Training Pipeline | Alin | Milestone 2 | Planned | `DAT-01`, `NLP-01` |
+| **[MLP-01](#mlp-01--tf-idf-vectorization--classifier-training-pipeline)** | TF-IDF Vectorization & Classifier Training Pipeline | Alin | Milestone 2 | **Done** | `DAT-01`, `NLP-01` |
 | **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Person A | Milestone 3 & 4 | Planned | `NLP-01`, `MLP-01` |
 | **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Person A | Milestone 4 | Planned | `MLP-01`, `MLP-02` |
 | **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | **Done** | *None* |
@@ -149,7 +149,8 @@ flowchart TD
 ---
 
 ### `MLP-01` — TF-IDF Vectorization & Classifier Training Pipeline
-- **Owner**: Person A (Machine Learning & Data)
+- **Status**: Done
+- **Owner**: Alin (Machine Learning & Data)
 - **Milestone**: Milestone 2 (The Core Model)
 - **Target Paths**: `notebooks/02_model_training.ipynb`, `models/model.pkl`
 - **Depends On**: `DAT-01`, `NLP-01`
@@ -172,8 +173,8 @@ flowchart TD
    - Bundle vectorizer + trained classifier into a single Scikit-Learn `Pipeline` (or structured dictionary artifact containing `vectorizer`, `classifier`, `classes`, and `metadata`) and serialize via `joblib.dump` / `pickle` to `models/model.pkl`.
 
 #### Acceptance Criteria
-- [ ] Training notebook executes end-to-end and achieves strong held-out generalization (target F1 `>= 0.90` on benchmark dataset without publisher leakage).
-- [ ] `models/model.pkl` is exported and exposes both probability estimation (`predict_proba`) and linear feature weights (`coef_`).
+- [x] Training notebook executes end-to-end and achieves strong held-out generalization (target F1 `>= 0.90` on benchmark dataset without publisher leakage).
+- [x] `models/model.pkl` is exported and exposes both probability estimation (`predict_proba`) and linear feature weights (`coef_`).
 
 ---
 
