@@ -39,7 +39,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | **[MLP-01](#mlp-01--tf-idf-vectorization--classifier-training-pipeline)** | TF-IDF Vectorization & Classifier Training Pipeline | Alin | Milestone 2 | Planned | `DAT-01`, `NLP-01` |
 | **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Person A | Milestone 3 & 4 | Planned | `NLP-01`, `MLP-01` |
 | **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Person A | Milestone 4 | Planned | `MLP-01`, `MLP-02` |
-| **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | Planned | *None* |
+| **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | **Done** | *None* |
 | **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Person B | Milestone 3 & 4 | Planned | `SCR-01`, `MLP-02`, `MLP-03` |
 | **[API-02](#api-02--user-feedback-loop-api--persistence)** | User Feedback Loop API & Persistence | Person B | Milestone 4 | Planned | `API-01` |
 | **[WEB-01](#web-01--news-submission-interface-text--url-modes)** | News Submission Interface (Text & URL Modes) | Alin | Milestone 2 | **Done** | *None* |
@@ -228,7 +228,7 @@ flowchart TD
 ---
 
 ### `SCR-01` — News Article URL Scraper
-- **Owner**: Person B (Full-Stack & Integration)
+- **Owner**: Carina (Full-Stack & Integration)
 - **Milestone**: Milestone 3 (URL Scraping & API Logic — Standout CV Feature: URL Parsing)
 - **Target Paths**: `backend/scraper.py`
 - **Depends On**: *None*
@@ -252,9 +252,9 @@ flowchart TD
    - Return `{ "url": str, "title": str, "text": str }`.
 
 #### Acceptance Criteria
-- [ ] `extract_article_text(url)` reliably extracts clean headline and multi-paragraph body text from standard news articles.
-- [ ] Rejects invalid schemes (`file://`, `ftp://`, `javascript:`) and private/localhost IPs.
-- [ ] Times out cleanly within 10 seconds and raises structured exceptions on HTTP 4xx/5xx or paywalled/empty pages.
+- [x] `extract_article_text(url)` reliably extracts clean headline and multi-paragraph body text from standard news articles.
+- [x] Rejects invalid schemes (`file://`, `ftp://`, `javascript:`) and private/localhost IPs.
+- [x] Times out cleanly within 10 seconds and raises structured exceptions on HTTP 4xx/5xx or paywalled/empty pages.
 
 ---
 
@@ -363,7 +363,7 @@ flowchart TD
 ---
 
 ### `WEB-02` — Credibility Verdict & Confidence Score Visualization
-- **Owner**: Person B (Full-Stack & Integration)
+- **Owner**: Carina (Full-Stack & Integration)
 - **Milestone**: Milestone 4 (Standout CV Feature: Confidence Scoring UI)
 - **Target Paths**: `frontend/src/components/PredictionResultCard.tsx`
 - **Depends On**: `WEB-01`
