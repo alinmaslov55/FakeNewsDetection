@@ -43,7 +43,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Person B | Milestone 3 & 4 | Planned | `SCR-01`, `MLP-02`, `MLP-03` |
 | **[API-02](#api-02--user-feedback-loop-api--persistence)** | User Feedback Loop API & Persistence | Person B | Milestone 4 | Planned | `API-01` |
 | **[WEB-01](#web-01--news-submission-interface-text--url-modes)** | News Submission Interface (Text & URL Modes) | Alin | Milestone 2 | **Done** | *None* |
-| **[WEB-02](#web-02--credibility-verdict--confidence-score-visualization)** | Credibility Verdict & Confidence Score Visualization | Carina | Milestone 4 | Planned | `WEB-01` |
+| **[WEB-02](#web-02--credibility-verdict--confidence-score-visualization)** | Credibility Verdict & Confidence Score Visualization | Carina | Milestone 4 | **Done** | `WEB-01` |
 | **[WEB-03](#web-03--explainable-word-highlighting-view)** | Explainable Word Highlighting View | Person B | Milestone 4 | Planned | `WEB-02` |
 | **[WEB-04](#web-04--user-feedback-flag-as-incorrect-ui-flow)** | User Feedback ("Flag as Incorrect") UI Flow | Person B | Milestone 4 | Planned | `WEB-02` |
 | **[INT-01](#int-01--frontend-api-service--end-to-end-state-integration)** | Frontend API Service & End-to-End State Integration | Person B | Milestone 4 | Planned | `API-01`, `API-02`, `WEB-01`, `WEB-02`, `WEB-03`, `WEB-04` |
@@ -383,8 +383,8 @@ flowchart TD
    - When analyzed via URL, display the extracted article `title` and a clickable external link to the source `url` (`rel="noopener noreferrer" target="_blank"`).
 
 #### Acceptance Criteria
-- [ ] Clearly distinguishes `REAL` and `FAKE` verdicts using accessible color contrast, icons, and text labels (not color alone).
-- [ ] Accurately formats `confidence` percentage and renders visual progress bar without overflow for boundary values (`0.50`, `1.00`).
+- [x] Clearly distinguishes `REAL` and `FAKE` verdicts using accessible color contrast, icons, and text labels (not color alone).
+- [x] Accurately formats `confidence` percentage and renders visual progress bar without overflow for boundary values (`0.50`, `1.00`).
 
 ---
 
