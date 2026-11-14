@@ -363,7 +363,7 @@ flowchart TD
 ---
 
 ### `WEB-02` — Credibility Verdict & Confidence Score Visualization
-- **Owner**: Person B (Full-Stack & Integration)
+- **Owner**: [Carina] (Full-Stack & Integration)
 - **Milestone**: Milestone 4 (Standout CV Feature: Confidence Scoring UI)
 - **Target Paths**: `frontend/src/components/PredictionResultCard.tsx`
 - **Depends On**: `WEB-01`
