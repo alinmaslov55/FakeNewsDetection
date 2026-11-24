@@ -34,10 +34,10 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 
 | Code | Feature Title | Owner | Milestone | Status | Depends On |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[DAT-01](#dat-01--dataset-acquisition-validation--exploratory-analysis)** | Dataset Acquisition, Validation & Exploratory Analysis | Carina | Milestone 1 | Planned | *None* |
+| **[DAT-01](#dat-01--dataset-acquisition-validation--exploratory-analysis)** | Dataset Acquisition, Validation & Exploratory Analysis | Carina | Milestone 1 | **Done** | *None* |
 | **[NLP-01](#nlp-01--text-preprocessing--linguistic-normalization-module)** | Text Preprocessing & Linguistic Normalization Module | Alin | Milestone 2 | **Done** | `DAT-01` |
 | **[MLP-01](#mlp-01--tf-idf-vectorization--classifier-training-pipeline)** | TF-IDF Vectorization & Classifier Training Pipeline | Alin | Milestone 2 | **Done** | `DAT-01`, `NLP-01` |
-| **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Carina | Milestone 3 & 4 | Planned | `NLP-01`, `MLP-01` |
+| **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Carina | Milestone 3 & 4 | **Done** | `NLP-01`, `MLP-01` |
 | **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Alin | Milestone 4 | Planned | `MLP-01`, `MLP-02` |
 | **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | **Done** | *None* |
 | **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Person B | Milestone 3 & 4 | Planned | `SCR-01`, `MLP-02`, `MLP-03` |
@@ -179,7 +179,7 @@ flowchart TD
 ---
 
 ### `MLP-02` — Model Loader, Credibility Inference & Confidence Scoring
-- **Owner**: Person A (Machine Learning & Data)
+- **Owner**: Carina (Machine Learning & Data)
 - **Milestone**: Milestone 3 & Milestone 4
 - **Target Paths**: `backend/predictor.py`
 - **Depends On**: `NLP-01`, `MLP-01`
@@ -198,9 +198,9 @@ flowchart TD
    - Return `confidence` standardized across the API contract as a float in `[0.0, 1.0]` rounded to 4 decimal places (e.g., `0.9420`, formatted as `94.2%` by the frontend in `WEB-02`).
 
 #### Acceptance Criteria
-- [ ] `predict_credibility()` loads `models/model.pkl` in memory once and runs single-article inference in `< 100ms`.
-- [ ] Returns deterministic `'REAL' | 'FAKE'` verdict alongside calibrated `confidence` score.
-- [ ] Raises descriptive errors when input text has insufficient tokens or model file is absent.
+- [x] `predict_credibility()` loads `models/model.pkl` in memory once and runs single-article inference in `< 100ms`.
+- [x] Returns deterministic `'REAL' | 'FAKE'` verdict alongside calibrated `confidence` score.
+- [x] Raises descriptive errors when input text has insufficient tokens or model file is absent.
 
 ---
 
