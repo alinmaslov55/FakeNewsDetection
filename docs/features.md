@@ -38,7 +38,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | **[NLP-01](#nlp-01--text-preprocessing--linguistic-normalization-module)** | Text Preprocessing & Linguistic Normalization Module | Alin | Milestone 2 | **Done** | `DAT-01` |
 | **[MLP-01](#mlp-01--tf-idf-vectorization--classifier-training-pipeline)** | TF-IDF Vectorization & Classifier Training Pipeline | Alin | Milestone 2 | **Done** | `DAT-01`, `NLP-01` |
 | **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Carina | Milestone 3 & 4 | **Done** | `NLP-01`, `MLP-01` |
-| **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Alin | Milestone 4 | Planned | `MLP-01`, `MLP-02` |
+| **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Alin | Milestone 4 | **Done** | `MLP-01`, `MLP-02` |
 | **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | **Done** | *None* |
 | **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Person B | Milestone 3 & 4 | Planned | `SCR-01`, `MLP-02`, `MLP-03` |
 | **[API-02](#api-02--user-feedback-loop-api--persistence)** | User Feedback Loop API & Persistence | Person B | Milestone 4 | Planned | `API-01` |
@@ -205,7 +205,8 @@ flowchart TD
 ---
 
 ### `MLP-03` — Feature Weight Explainability & Word Highlighting Engine
-- **Owner**: Person A (Machine Learning & Data)
+- **Status**: Done
+- **Owner**: Alin (Machine Learning & Data)
 - **Milestone**: Milestone 4 (Standout CV Feature: Word Highlighting / Explainability)
 - **Target Paths**: `backend/predictor.py`
 - **Depends On**: `MLP-01`, `MLP-02`
@@ -223,9 +224,9 @@ flowchart TD
    - Map lemmatized tokens back to matching surface words appearing in the original raw text where applicable so `WEB-03` can highlight exact substrings in the article body.
 
 #### Acceptance Criteria
-- [ ] `predict_credibility()` includes `highlights: list[dict[str, float | str]]` sorted by descending importance.
-- [ ] Returned `word` entries actually appear in (or directly correspond to) the submitted article text.
-- [ ] Weights are finite floats (`no NaN / Inf`) normalized for straightforward frontend visualization.
+- [x] `predict_credibility()` includes `highlights: list[dict[str, float | str]]` sorted by descending importance.
+- [x] Returned `word` entries actually appear in (or directly correspond to) the submitted article text.
+- [x] Weights are finite floats (`no NaN / Inf`) normalized for straightforward frontend visualization.
 
 ---
 
