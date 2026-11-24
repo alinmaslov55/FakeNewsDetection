@@ -1,10 +1,11 @@
-"""Model loading, credibility inference, and confidence scoring logic."""
+"""Model loading, credibility inference, confidence scoring, and explainability logic."""
 
 from __future__ import annotations
 
 from functools import lru_cache
 import math
 from pathlib import Path
+import re
 from typing import Any
 
 import joblib
@@ -14,7 +15,9 @@ from backend.preprocessing import preprocess_text, warmup
 
 MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "model.pkl"
 MIN_MEANINGFUL_TOKENS = 5
+DEFAULT_TOP_HIGHLIGHTS = 12
 REQUIRED_ARTIFACT_KEYS = ("pipeline", "vectorizer", "classifier", "classes")
+_RAW_WORD_RE = re.compile(r"[A-Za-z]+(?:'[A-Za-z]+)?")
 
 
 class ModelNotLoadedError(RuntimeError):
@@ -136,16 +139,171 @@ def _resolve_verdict(pipeline: Any, classes_map: dict[Any, str], pred_col: int) 
     return verdict
 
 
-def predict_credibility(text: str) -> dict[str, object]:
+def _extract_linear_weights(classifier: Any) -> np.ndarray | None:
+    """Extract a 1D linear weight vector from a classifier or CalibratedClassifierCV."""
+    if hasattr(classifier, "coef_"):
+        coef = np.asarray(classifier.coef_, dtype=float)
+        if coef.ndim == 2:
+            return coef[0]
+        if coef.ndim == 1:
+            return coef
+        return None
+
+    calibrated = getattr(classifier, "calibrated_classifiers_", None)
+    if not calibrated:
+        return None
+
+    fold_coefs: list[np.ndarray] = []
+    for entry in calibrated:
+        base_est = getattr(entry, "estimator", None)
+        if base_est is not None and hasattr(base_est, "coef_"):
+            coef = np.asarray(base_est.coef_, dtype=float)
+            fold_coefs.append(coef[0] if coef.ndim == 2 else coef.ravel())
+
+    if not fold_coefs:
+        return None
+    return np.mean(fold_coefs, axis=0)
+
+
+def _get_explainability_arrays(artifact: dict[str, Any]) -> tuple[np.ndarray, np.ndarray] | None:
+    """Return cached (feature_names, weights) arrays if supported by the loaded artifact."""
+    cached = artifact.get("_explain_cache")
+    if cached is not None:
+        return cached
+
+    vectorizer = artifact.get("vectorizer")
+    classifier = artifact.get("classifier")
+    if vectorizer is None or classifier is None:
+        return None
+    if not hasattr(vectorizer, "transform") or not hasattr(vectorizer, "get_feature_names_out"):
+        return None
+
+    weights = _extract_linear_weights(classifier)
+    if weights is None:
+        return None
+
+    feature_names = np.asarray(vectorizer.get_feature_names_out())
+    if feature_names.shape[0] != weights.shape[0]:
+        return None
+
+    pair = (feature_names, weights)
+    artifact["_explain_cache"] = pair
+    return pair
+
+
+def _build_surface_lookup(raw_text: str) -> dict[str, str]:
     """
-    Predict credibility ('REAL' vs 'FAKE') and calibrated confidence for raw article text.
+    Map preprocessed unigram/bigram lemmas back to surface substrings in raw_text.
+
+    Preserves exact surface forms (e.g. 'studies' instead of 'study') so WEB-03
+    can highlight exact substrings in the original article body.
+    """
+    raw_words = _RAW_WORD_RE.findall(raw_text)
+    if not raw_words:
+        return {}
+
+    surface_map: dict[str, str] = {}
+    token_lemmas: list[str] = []
+
+    for word in raw_words:
+        lower_word = word.lower()
+        lemma = preprocess_text(lower_word)
+        token_lemmas.append(lemma)
+        if not lemma or " " in lemma:
+            continue
+        if lemma not in surface_map or lower_word == lemma:
+            surface_map[lemma] = lower_word
+
+    for idx in range(len(raw_words) - 1):
+        lemma_a = token_lemmas[idx]
+        lemma_b = token_lemmas[idx + 1]
+        if not lemma_a or not lemma_b or " " in lemma_a or " " in lemma_b:
+            continue
+        bigram_key = f"{lemma_a} {lemma_b}"
+        bigram_surface = f"{raw_words[idx].lower()} {raw_words[idx + 1].lower()}"
+        if bigram_key not in surface_map or bigram_surface == bigram_key:
+            surface_map[bigram_key] = bigram_surface
+
+    return surface_map
+
+
+def _compute_highlights(
+    artifact: dict[str, Any],
+    raw_text: str,
+    cleaned_text: str,
+    pred_col: int,
+    *,
+    top_k: int = DEFAULT_TOP_HIGHLIGHTS,
+) -> list[dict[str, float | str]]:
+    """Compute top-K verdict-aligned feature highlights normalized to (0.0, 1.0]."""
+    if top_k <= 0:
+        return []
+
+    arrays = _get_explainability_arrays(artifact)
+    if arrays is None:
+        return []
+
+    feature_names, weights = arrays
+    vectorizer = artifact["vectorizer"]
+    tfidf_vec = vectorizer.transform([cleaned_text])
+    nonzero_cols = tfidf_vec.nonzero()[1]
+    if nonzero_cols.size == 0:
+        return []
+
+    # Binary linear models: positive coef_ pushes toward classes_[1], negative toward classes_[0]
+    direction = 1.0 if pred_col == 1 else -1.0
+    tfidf_vals = np.asarray(tfidf_vec[0, nonzero_cols].toarray(), dtype=float).ravel()
+    raw_scores = tfidf_vals * weights[nonzero_cols] * direction
+
+    candidates: list[tuple[str, float]] = []
+    for col_idx, score in zip(nonzero_cols, raw_scores):
+        score_f = float(score)
+        if score_f > 0.0 and math.isfinite(score_f):
+            candidates.append((str(feature_names[col_idx]), score_f))
+
+    if not candidates:
+        return []
+
+    candidates.sort(key=lambda item: item[1], reverse=True)
+    surface_map = _build_surface_lookup(raw_text)
+
+    selected: list[tuple[str, float]] = []
+    seen_terms: set[str] = set()
+    for feature, score in candidates:
+        surface_term = surface_map.get(feature, feature)
+        dedup_key = surface_term.lower()
+        if dedup_key in seen_terms:
+            continue
+        seen_terms.add(dedup_key)
+        selected.append((surface_term, score))
+        if len(selected) >= top_k:
+            break
+
+    max_score = selected[0][1]
+    if max_score <= 0.0 or not math.isfinite(max_score):
+        return []
+
+    return [
+        {"word": term, "weight": round(min(1.0, max(0.0, score / max_score)), 4)}
+        for term, score in selected
+    ]
+
+
+def predict_credibility(
+    text: str,
+    *,
+    top_k: int = DEFAULT_TOP_HIGHLIGHTS,
+) -> dict[str, object]:
+    """
+    Predict credibility ('REAL' vs 'FAKE'), calibrated confidence, and top highlights.
 
     Args:
         text: Raw article text string.
+        top_k: Maximum number of influential highlight tokens to return.
 
     Returns:
         dict: Containing 'verdict' ('REAL' | 'FAKE'), 'confidence' (float in [0.0, 1.0]),
-            and 'highlights' (populated by MLP-03).
+            and 'highlights' (list of {'word': str, 'weight': float} sorted descending).
 
     Raises:
         ModelNotLoadedError: If the trained model artifact cannot be loaded.
@@ -169,9 +327,10 @@ def predict_credibility(text: str) -> dict[str, object]:
         raise ModelNotLoadedError("Model predict_proba() returned a non-finite confidence score.")
 
     confidence = round(min(1.0, max(0.0, raw_prob)), 4)
+    highlights = _compute_highlights(artifact, text, cleaned_text, pred_col, top_k=top_k)
 
     return {
         "verdict": verdict,
         "confidence": confidence,
-        "highlights": [],
+        "highlights": highlights,
     }
