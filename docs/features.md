@@ -40,7 +40,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | **[MLP-02](#mlp-02--model-loader-credibility-inference--confidence-scoring)** | Model Loader, Credibility Inference & Confidence Scoring | Carina | Milestone 3 & 4 | **Done** | `NLP-01`, `MLP-01` |
 | **[MLP-03](#mlp-03--feature-weight-explainability--word-highlighting-engine)** | Feature Weight Explainability & Word Highlighting Engine | Alin | Milestone 4 | **Done** | `MLP-01`, `MLP-02` |
 | **[SCR-01](#scr-01--news-article-url-scraper)** | News Article URL Scraper (`BeautifulSoup`) | Carina | Milestone 3 | **Done** | *None* |
-| **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Carina | Milestone 3 & 4 | Planned | `SCR-01`, `MLP-02`, `MLP-03` |
+| **[API-01](#api-01--credibility-prediction--url-analysis-api-endpoints)** | Credibility Prediction & URL Analysis API Endpoints | Carina | Milestone 3 & 4 | **Done** | `SCR-01`, `MLP-02`, `MLP-03` |
 | **[API-02](#api-02--user-feedback-loop-api--persistence)** | User Feedback Loop API & Persistence | Carina | Milestone 4 | Planned | `API-01` |
 | **[WEB-01](#web-01--news-submission-interface-text--url-modes)** | News Submission Interface (Text & URL Modes) | Alin | Milestone 2 | **Done** | *None* |
 | **[WEB-02](#web-02--credibility-verdict--confidence-score-visualization)** | Credibility Verdict & Confidence Score Visualization | Carina | Milestone 4 | **Done** | `WEB-01` |
@@ -262,7 +262,7 @@ flowchart TD
 ---
 
 ### `API-01` — Credibility Prediction & URL Analysis API Endpoints
-- **Owner**: Person B (Full-Stack & Integration)
+- **Owner**: Carina (Full-Stack & Integration)
 - **Milestone**: Milestone 3 & Milestone 4
 - **Target Paths**: `backend/schemas.py`, `backend/app.py`
 - **Depends On**: `SCR-01`, `MLP-02`, `MLP-03`
@@ -297,14 +297,14 @@ flowchart TD
    - Include `model_loaded: bool` status alongside `status: "healthy"` so the frontend knows if inference is ready.
 
 #### Acceptance Criteria
-- [ ] `POST /api/predict` accepts `{ "text": "..." }` and returns `{ verdict, confidence, text, highlights }`.
-- [ ] `POST /api/predict` accepts `{ "url": "https://..." }`, scrapes article title & body, and returns `{ verdict, confidence, title, text, highlights }`.
-- [ ] OpenAPI docs (`/docs`) display complete request/response schemas and status codes.
+- [x] `POST /api/predict` accepts `{ "text": "..." }` and returns `{ verdict, confidence, text, highlights }`.
+- [x] `POST /api/predict` accepts `{ "url": "https://..." }`, scrapes article title & body, and returns `{ verdict, confidence, title, text, highlights }`.
+- [x] OpenAPI docs (`/docs`) display complete request/response schemas and status codes.
 
 ---
 
 ### `API-02` — User Feedback Loop API & Persistence
-- **Owner**: Person B (Full-Stack & Integration)
+- **Owner**: Carina (Full-Stack & Integration)
 - **Milestone**: Milestone 4 (Standout CV Feature: User Feedback Loop)
 - **Target Paths**: `backend/schemas.py`, `backend/feedback.py`, `backend/app.py`
 - **Depends On**: `API-01`
