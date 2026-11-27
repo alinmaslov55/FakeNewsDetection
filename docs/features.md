@@ -44,7 +44,7 @@ Each feature uses a `AAA-number` identifier where `AAA` denotes the architectura
 | **[API-02](#api-02--user-feedback-loop-api--persistence)** | User Feedback Loop API & Persistence | Carina | Milestone 4 | Planned | `API-01` |
 | **[WEB-01](#web-01--news-submission-interface-text--url-modes)** | News Submission Interface (Text & URL Modes) | Alin | Milestone 2 | **Done** | *None* |
 | **[WEB-02](#web-02--credibility-verdict--confidence-score-visualization)** | Credibility Verdict & Confidence Score Visualization | Carina | Milestone 4 | **Done** | `WEB-01` |
-| **[WEB-03](#web-03--explainable-word-highlighting-view)** | Explainable Word Highlighting View | Alin | Milestone 4 | Planned | `WEB-02` |
+| **[WEB-03](#web-03--explainable-word-highlighting-view)** | Explainable Word Highlighting View | Alin | Milestone 4 | **Done** | `WEB-02` |
 | **[WEB-04](#web-04--user-feedback-flag-as-incorrect-ui-flow)** | User Feedback ("Flag as Incorrect") UI Flow | Alin | Milestone 4 | Planned | `WEB-02` |
 | **[INT-01](#int-01--frontend-api-service--end-to-end-state-integration)** | Frontend API Service & End-to-End State Integration | Person B | Milestone 4 | Planned | `API-01`, `API-02`, `WEB-01`, `WEB-02`, `WEB-03`, `WEB-04` |
 | **[TST-01](#tst-01--automated-unit-integration--e2e-pipeline-test-suite)** | Automated Unit, Integration & E2E Pipeline Test Suite | Both | Milestone 4 | Planned | `MLP-02`, `MLP-03`, `SCR-01`, `API-01`, `API-02`, `INT-01` |
@@ -392,7 +392,8 @@ flowchart TD
 ---
 
 ### `WEB-03` — Explainable Word Highlighting View
-- **Owner**: Person B (Full-Stack & Integration)
+- **Status**: Done
+- **Owner**: Alin (Full-Stack & Integration)
 - **Milestone**: Milestone 4 (Standout CV Feature: Word Highlighting / Explainability UI)
 - **Target Paths**: `frontend/src/components/HighlightedArticleView.tsx`
 - **Depends On**: `WEB-02`
@@ -409,8 +410,8 @@ flowchart TD
    - For long scraped articles (`> 300` words), provide an "Expand Full Article / Show Less" toggle so the page remains compact while allowing full inspection.
 
 #### Acceptance Criteria
-- [ ] Scraped or pasted text renders with highlighted influential words matching `highlights` without raw HTML injection vulnerabilities.
-- [ ] Gracefully handles empty `highlights: []` by rendering clean unhighlighted article text with an informational note.
+- [x] Scraped or pasted text renders with highlighted influential words matching `highlights` without raw HTML injection vulnerabilities.
+- [x] Gracefully handles empty `highlights: []` by rendering clean unhighlighted article text with an informational note.
 
 ---
 
