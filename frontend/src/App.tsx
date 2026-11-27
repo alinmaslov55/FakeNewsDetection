@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { ShieldCheck, Sparkles } from 'lucide-react'
+import { HighlightedArticleView } from './components/HighlightedArticleView'
 import { NewsInputForm } from './components/NewsInputForm'
 import { PredictionResultCard } from './components/PredictionResultCard'
-import type { PredictionRequest, PredictionResponse } from './types'
+import type { HighlightToken, PredictionRequest, PredictionResponse } from './types'
 
 interface PreviewPredictionState {
   result: PredictionResponse
@@ -12,31 +13,68 @@ interface PreviewPredictionState {
 const SENSATIONAL_CUES =
   /\b(shocking|miracle|elites|leaked video|big pharma|deleted|secret)\b|!{2,}/i
 
+const PREVIEW_FAKE_TERMS: HighlightToken[] = [
+  { word: 'shocking', weight: 1.0 },
+  { word: 'miracle', weight: 0.86 },
+  { word: 'big pharma', weight: 0.74 },
+  { word: 'leaked video', weight: 0.62 },
+  { word: 'elites', weight: 0.51 },
+  { word: 'deleted', weight: 0.36 },
+  { word: 'secret', weight: 0.28 },
+]
+
+const PREVIEW_REAL_TERMS: HighlightToken[] = [
+  { word: 'International Energy Agency', weight: 1.0 },
+  { word: 'reported', weight: 0.78 },
+  { word: 'renewable energy', weight: 0.64 },
+  { word: 'manufacturing', weight: 0.45 },
+  { word: 'markets', weight: 0.31 },
+]
+
+function extractPreviewHighlights(
+  text: string,
+  candidates: HighlightToken[]
+): HighlightToken[] {
+  const lower = text.toLowerCase()
+  return candidates.filter((item) => lower.includes(item.word.toLowerCase()))
+}
+
 function buildSimulatedPrediction(
   payload: PredictionRequest
 ): PreviewPredictionState {
   if (payload.url) {
+    const simulatedText =
+      'The central bank reported on Thursday that benchmark interest rates remain unchanged following quarterly inflation data released by the national statistics bureau.'
     return {
       sourceUrl: payload.url,
       result: {
         verdict: 'REAL',
         confidence: 0.912,
         title: 'Extracted News Article Headline (Preview)',
-        text: 'Simulated article body extracted from the submitted URL for WEB-02 preview.',
-        highlights: [],
+        text: simulatedText,
+        highlights: [
+          { word: 'central bank', weight: 1.0 },
+          { word: 'reported', weight: 0.76 },
+          { word: 'inflation', weight: 0.54 },
+          { word: 'statistics', weight: 0.34 },
+        ],
       },
     }
   }
 
   const text = payload.text ?? ''
   const isLikelyFake = SENSATIONAL_CUES.test(text)
+  const highlights = extractPreviewHighlights(
+    text,
+    isLikelyFake ? PREVIEW_FAKE_TERMS : PREVIEW_REAL_TERMS
+  )
 
   return {
     result: {
       verdict: isLikelyFake ? 'FAKE' : 'REAL',
       confidence: isLikelyFake ? 0.946 : 0.894,
       text,
-      highlights: [],
+      highlights,
     },
   }
 }
@@ -78,7 +116,7 @@ export function App() {
           <div className="flex items-center gap-2">
             <span className="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-700 font-medium rounded-full border border-emerald-200 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              WEB-02 Ready
+              WEB-03 Ready
             </span>
           </div>
         </div>
@@ -108,12 +146,17 @@ export function App() {
           isLoading={isLoading}
         />
 
-        {/* Credibility Verdict & Confidence Score Card */}
+        {/* Credibility Verdict, Confidence Score & Word Highlighting */}
         {prediction && (
-          <div className="w-full flex justify-center mt-6">
+          <div className="w-full flex flex-col items-center gap-6 mt-6">
             <PredictionResultCard
               result={prediction.result}
               sourceUrl={prediction.sourceUrl}
+            />
+            <HighlightedArticleView
+              text={prediction.result.text}
+              highlights={prediction.result.highlights}
+              verdict={prediction.result.verdict}
             />
           </div>
         )}
